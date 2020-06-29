@@ -5,19 +5,20 @@
             <Post v-for="(postData, i) in PostsData" :key="i" :postData="postData"/>
         </div>
         <div v-if="step === 1">
-            <div class="upload-image"
+            <div :class="['upload-image', selectFilterName]"
                  :style="`background-image: url(${uploadImage})`"></div>
             <div class="filters">
-                <div class="filter-1"></div>
-                <div class="filter-1"></div>
-                <div class="filter-1"></div>
-                <div class="filter-1"></div>
-                <div class="filter-1"></div>
+                <FilterBox v-for="(item, i) in filterBoxes" :key="i"
+                           :filterBox="item"
+                           :uploadImage="uploadImage"
+                >
+                    <p>{{item}}</p>
+                </FilterBox>
             </div>
         </div>
 
         <div v-if="step === 2">
-            <div class="upload-image"
+            <div :class="['upload-image', selectFilterName]"
                  :style="`background-image: url(${uploadImage})`"></div>
             <div class="write">
                 <label>
@@ -33,16 +34,20 @@
 
 <script>
     import Post from './Post';
+    import FilterBox from "./FilterBox";
 
     export default {
         name: "Body",
         components: {
+            FilterBox,
             Post
         },
         props: {
             PostsData: Array,
             step: Number,
-            uploadImage: String
+            uploadImage: String,
+            filterBoxes: Array,
+            selectFilterName: String
         },
         data() {
             return {

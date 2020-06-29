@@ -10,11 +10,28 @@
             </ul>
             <img src="./assets/logo.png" class="logo">
         </div>
+        <h4>{{$store.getters.GET_NAME}}</h4>
+        <h4>{{$store.state.age}}</h4>
+        <div>
+            <button @click="$store.commit('ADD_AGE')">나이 더하기</button>
+        </div>
+        <div>
+            <button @click="$store.commit('NAME_CHANGE', 'JEON')">이름 바꾸기</button>
+        </div>
+        <div>
+            <button @click="$store.dispatch('showMore')">더보기</button>
+        </div>
         <Body @test="customEvent($event)"
               @postText="postText = $event"
               :PostsData="PostsData"
               :step="step"
-              :uploadImage="uploadImage"/>
+              :uploadImage="uploadImage"
+              :filterBoxes="filterBoxes"
+              :selectFilterName="selectFilterName"
+        />
+        <div>
+            <button @click="showMore">더보기</button>
+        </div>
         <div class="footer">
             <ul class="footer-button-plus">
                 <input type="file" id="file" class="inputfile" @change="upload($event)">
@@ -27,6 +44,8 @@
 <script>
     import Body from './components/Body';
     import PostsData from "./assets/PostsData";
+    import EventBus from "./EventBus";
+    import axios from 'axios';
 
     export default {
         name: 'App',
@@ -39,7 +58,9 @@
                 step: 0,
                 uploadImage: '',
                 eventData: '',
-                postText: ''
+                postText: '',
+                filterBoxes: ["normal", "clarendon", "gingham", "moon", "lark", "reyes", "juno", "slumber", "aden", "perpetua", "mayfair", "rise", "hudson", "valencia", "xpro2", "willow", "lofi", "inkwell", "nashville"],
+                selectFilterName: ''
             }
         },
         methods: {
@@ -68,7 +89,7 @@
                     date: new Date(),
                     liked: false,
                     caption: this.postText,
-                    filter: "clarendon"
+                    filter: this.selectFilterName
                 };
                 // this.PostsData = [post, ...this.PostsData];
                 this.PostsData.unshift(post);
@@ -79,7 +100,21 @@
             },
             customEvent(e) {
                 console.log(e);
+            },
+            showMore() {
+                axios
+                    .get('https://yogoho210.github.io/postdata2.json')
+                    .then(data => {
+                        this.PostsData.push(data.data);
+                    }).catch(error => {
+                    console.log(error);
+                });
             }
+        },
+        mounted() {
+            EventBus.$on('selectFilter', (filter) => {
+                this.selectFilterName = filter;
+            });
         }
     }
 </script>

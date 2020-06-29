@@ -1,11 +1,11 @@
 <template>
     <div class="post">
         <div class="post-header">
-            <div class="profile" :style="`background-image: url(${postData.userImage})`">></div>
+            <div class="profile" :style="`background-image: url(${postData.userImage})`"></div>
             <span class="profile-name">{{postData.name}}</span>
         </div>
 
-        <div class="post-body"
+        <div :class="['post-body', postData.filter]"
             :style="`background-image: url(${postData.postImage})`">
         </div>
         <div class="post-content">
